@@ -7,3 +7,7 @@ functions:
     lang: go
     handler: ./hello
     image: hello:latest
+  goto:
+    lang: golang-middleware
+    handler: ./goto
+    image: goto:latest
