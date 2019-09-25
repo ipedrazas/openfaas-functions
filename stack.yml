@@ -11,3 +11,5 @@ functions:
     lang: golang-middleware
     handler: ./goto
     image: goto:latest
+    secrets:
+      - my-secrets
