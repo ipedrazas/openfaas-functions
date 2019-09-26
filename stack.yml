@@ -13,3 +13,7 @@ functions:
     image: goto:latest
     secrets:
       - my-secrets
+  plusone:
+    lang: golang-middleware
+    handler: ./plusone
+    image: plusone:latest
