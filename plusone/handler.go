@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 )
 
 // PlusOne contains 3 attributes: userid (hash), the topic and the counter
@@ -54,8 +55,14 @@ func Handle(w http.ResponseWriter, r *http.Request) {
 		entry.counter = increaseTopic(userid, topic)
 
 	}
-
+	var bb []byte
 	keys, err := getKeys(userid+"*", client)
+	for _, k := range keys {
+		pi, _ := strconv.Atoi(k)
+		bb = append(bb, byte(pi))
+	}
+	w.Write(bb)
+
 	entries := getEntries(keys, client)
 	byteSlice, err := json.Marshal(entries)
 	if err != nil {
