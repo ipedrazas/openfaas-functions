@@ -2,6 +2,25 @@
 
 
 [[projects]]
+  branch = "master"
+  digest = "1:7afff364b8e5e9f1085fe77ae5630b8e0f7482338a50535881aa0b433e48fb0b"
+  name = "github.com/alicebob/gopher-json"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "5a6b3ba71ee69b77cf64febf8b5a7526ca5eaef0"
+
+[[projects]]
+  digest = "1:7e00c4894ec4805e2a71bd368ddbc0cba52c959f5cf3d032a8d3a9c8d8d01050"
+  name = "github.com/alicebob/miniredis"
+  packages = [
+    ".",
+    "server",
+  ]
+  pruneopts = "UT"
+  revision = "3d7aa1333af56ab862d446678d93aaa6803e0938"
+  version = "v2.7.0"
+
+[[projects]]
   digest = "1:61a8ca58fee5891ccd5e9e0503d3cb0636fe15505a7b758d51fe38d38bfce32f"
   name = "github.com/go-redis/redis"
   packages = [
@@ -17,9 +36,36 @@
   revision = "17c058513b3e03c5e23136c18582fdd8ac8a3645"
   version = "v6.15.5"
 
+[[projects]]
+  digest = "1:38ec74012390146c45af1f92d46e5382b50531247929ff3a685d2b2be65155ac"
+  name = "github.com/gomodule/redigo"
+  packages = [
+    "internal",
+    "redis",
+  ]
+  pruneopts = "UT"
+  revision = "9c11da706d9b7902c6da69c592f75637793fe121"
+  version = "v2.0.0"
+
+[[projects]]
+  branch = "master"
+  digest = "1:f680304b19a1f055b5df0ef87918d7f0920ef117c194ea25a8189e13ccb6ad52"
+  name = "github.com/yuin/gopher-lua"
+  packages = [
+    ".",
+    "ast",
+    "parse",
+    "pm",
+  ]
+  pruneopts = "UT"
+  revision = "1cd887cd7036fd4be7a0cb180dd508cb8e2e689a"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  input-imports = ["github.com/go-redis/redis"]
+  input-imports = [
+    "github.com/alicebob/miniredis",
+    "github.com/go-redis/redis",
+  ]
   solver-name = "gps-cdcl"
   solver-version = 1

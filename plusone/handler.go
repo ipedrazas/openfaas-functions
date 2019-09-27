@@ -14,7 +14,7 @@ type PlusOne struct {
 	counter int64
 }
 
-func init() {
+func setup() {
 	endpoint, err := ioutil.ReadFile("/var/openfaas/secrets/redis-endpoint")
 	if err != nil {
 		panic(err)
@@ -30,6 +30,7 @@ func init() {
 func Handle(w http.ResponseWriter, r *http.Request) {
 
 	var userid string
+	setup()
 
 	if r.Method == "GET" {
 		userid = r.URL.Query().Get("uid")
@@ -49,8 +50,8 @@ func Handle(w http.ResponseWriter, r *http.Request) {
 
 	}
 
-	keys, err := getKeys(userid + "*")
-	entries := getEntries(keys)
+	keys, err := getKeys(userid+"*", client)
+	entries := getEntries(keys, client)
 	byteSlice, err := json.Marshal(entries)
 	if err != nil {
 		panic(err)

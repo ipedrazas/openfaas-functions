@@ -39,7 +39,7 @@ func increaseTopic(userid string, topic string) int64 {
 	return result
 }
 
-func getKeys(pattern string) ([]string, error) {
+func getKeys(pattern string, client *redisClient) ([]string, error) {
 
 	var cursor uint64
 	var keys []string
@@ -58,7 +58,7 @@ func getKeys(pattern string) ([]string, error) {
 	return keys, nil
 }
 
-func getEntries(keys []string) []PlusOne {
+func getEntries(keys []string, client *redisClient) []PlusOne {
 	var entries []PlusOne
 
 	for _, key := range keys {
