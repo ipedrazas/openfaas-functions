@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 )
 
 // PlusOne contains 3 attributes: userid (hash), the topic and the counter
@@ -51,7 +52,13 @@ func Handle(w http.ResponseWriter, r *http.Request) {
 			userID: userid,
 			topic:  topic,
 		}
-		entry.counter = increaseTopic(userid, topic)
+		entry.counter, err = increaseTopic(userid, topic)
+		if err = r.ParseForm(); err != nil {
+			fmt.Fprintf(w, "redis.incr error: %v", err)
+			return
+		}
+		m := []byte("topic: " + userid + ", " + strconv.Itoa(int(entry.counter)))
+		w.Write(m)
 
 	}
 	msg := []byte("userid: " + userid)

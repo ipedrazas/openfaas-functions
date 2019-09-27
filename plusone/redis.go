@@ -31,12 +31,12 @@ func initialize(addr string, pwd string) *redisClient {
 	return client
 }
 
-func increaseTopic(userid string, topic string) int64 {
+func increaseTopic(userid string, topic string) (int64, error) {
 	result, err := client.c.Incr(userid + separator + topic).Result()
 	if err != nil {
-		panic(err)
+		return 0, err
 	}
-	return result
+	return result, nil
 }
 
 func getKeys(pattern string, client *redisClient) ([]string, error) {
