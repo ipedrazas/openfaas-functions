@@ -17,3 +17,5 @@ functions:
     lang: golang-middleware
     handler: ./plusone
     image: plusone:latest
+    secrets:
+      - my-secrets
