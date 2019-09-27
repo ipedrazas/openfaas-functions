@@ -48,7 +48,7 @@ func getKeys(pattern string, client *redisClient) ([]string, error) {
 		var err error
 		ks, cursor, err = client.c.Scan(cursor, pattern, 10).Result()
 		if err != nil {
-			panic(err)
+			return nil, err
 		}
 		if cursor == 0 {
 			break
@@ -58,12 +58,17 @@ func getKeys(pattern string, client *redisClient) ([]string, error) {
 	return keys, nil
 }
 
-func getEntries(keys []string, client *redisClient) []PlusOne {
+func getEntries(keys []string, client *redisClient) ([]PlusOne, error) {
 	var entries []PlusOne
 
 	for _, key := range keys {
 		res := strings.Split(key, separator)
-		count, _ := strconv.Atoi(client.c.Get(key).Val())
+		value := client.c.Get(key)
+		if value.Err() != nil {
+			return nil, value.Err()
+		}
+
+		count, _ := strconv.Atoi(value.Val())
 
 		p := PlusOne{
 			userID:  res[0],
@@ -73,5 +78,5 @@ func getEntries(keys []string, client *redisClient) []PlusOne {
 		entries = append(entries, p)
 
 	}
-	return entries
+	return entries, nil
 }

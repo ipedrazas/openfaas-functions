@@ -53,7 +53,7 @@ func Handle(w http.ResponseWriter, r *http.Request) {
 			topic:  topic,
 		}
 		entry.counter, err = increaseTopic(userid, topic)
-		if err = r.ParseForm(); err != nil {
+		if err != nil {
 			fmt.Fprintf(w, "redis.incr error: %v", err)
 			return
 		}
@@ -65,12 +65,19 @@ func Handle(w http.ResponseWriter, r *http.Request) {
 	w.Write(msg)
 
 	keys, err := getKeys(userid+"*", client)
+	if err != nil {
+		fmt.Fprintf(w, "redis.incr error: %v", err)
+		return
+	}
 	for _, k := range keys {
 		w.Write([]byte(k))
 	}
 
-	entries := getEntries(keys, client)
-
+	entries, err := getEntries(keys, client)
+	if err != nil {
+		fmt.Fprintf(w, "redis.incr error: %v", err)
+		return
+	}
 	byteSlice, err := json.Marshal(entries)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
