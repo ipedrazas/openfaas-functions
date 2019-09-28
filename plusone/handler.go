@@ -9,9 +9,9 @@ import (
 
 // PlusOne contains 3 attributes: userid (hash), the topic and the counter
 type PlusOne struct {
-	userID  string
-	topic   string
-	counter int64
+	UserID  string `json:"userid"`
+	Topic   string `json:"topic"`
+	Counter int64  `json:"counter"`
 }
 
 func setup() error {
@@ -62,7 +62,7 @@ func Handle(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "redis.getKeys error: %v\n", err)
 		return
 	}
-
+	fmt.Fprintf(w, "redis.getKeys: %v\n", keys)
 	entries, err := getEntries(keys, client)
 	if err != nil {
 		fmt.Fprintf(w, "redis.getEntries: %v\n", err)
