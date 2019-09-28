@@ -88,7 +88,7 @@ func Handle(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	fmt.Fprintf(w, "entries: %v\n", byteSlice)
+	fmt.Fprintf(w, "entries: %s\n", string(byteSlice))
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(200)
 	w.Write(byteSlice)
