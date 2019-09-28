@@ -54,10 +54,10 @@ func Handle(w http.ResponseWriter, r *http.Request) {
 
 		err = increaseTopic(entry)
 		if err != nil {
-			fmt.Fprintf(w, "redis.incr error: %v", err)
+			fmt.Fprintf(w, "redis.incr error: %v\n", err)
 			return
 		}
-		fmt.Fprintf(w, "topic: %s, %d", entry.userID, entry.counter)
+		fmt.Fprintf(w, "topic: %s, %d\n", entry.userID, entry.counter)
 
 	}
 
@@ -65,20 +65,22 @@ func Handle(w http.ResponseWriter, r *http.Request) {
 
 	keys, err := getKeys(entry.userID+"*", client)
 	if err != nil {
-		fmt.Fprintf(w, "redis.incr error: %v", err)
+		fmt.Fprintf(w, "redis.incr error: %v\n", err)
 		return
 	}
 	for _, k := range keys {
-		fmt.Fprintf(w, "keys: %s", k)
+		fmt.Fprintf(w, "keys: %s\n", k)
 	}
 
 	entries, err := getEntries(keys, client)
 	if err != nil {
-		fmt.Fprintf(w, "redis.getEntries: %v", err)
+		fmt.Fprintf(w, "redis.getEntries: %v\n", err)
 		return
 	}
 	for _, e := range entries {
-		fmt.Fprintf(w, "entry: %v", e)
+		fmt.Fprintf(w, "entry uid: %s\n", e.userID)
+		fmt.Fprintf(w, "entry topic: %s\n", e.topic)
+		fmt.Fprintf(w, "entry counter: %d\n", e.counter)
 	}
 
 	byteSlice, err := json.Marshal(entries)
@@ -86,7 +88,7 @@ func Handle(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	fmt.Fprintf(w, "entries: %v", byteSlice)
+	fmt.Fprintf(w, "entries: %v\n", byteSlice)
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(200)
 	w.Write(byteSlice)
