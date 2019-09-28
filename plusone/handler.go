@@ -68,7 +68,7 @@ func Handle(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "redis.getEntries: %v\n", err)
 		return
 	}
-
+	fmt.Fprintf(w, "redis.getEntries: %v\n", entries)
 	byteSlice, err := json.Marshal(entries)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
