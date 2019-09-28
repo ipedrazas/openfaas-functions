@@ -47,7 +47,7 @@ func getKeys(pattern string, client *redisClient) ([]string, error) {
 	for {
 		var ks []string
 		var err error
-		ks, cursor, err = client.c.Scan(cursor, pattern, 10).Result()
+		ks, cursor, err = client.c.Scan(cursor, pattern, 100).Result()
 		if err != nil {
 			return nil, err
 		}
