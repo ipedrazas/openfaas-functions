@@ -38,7 +38,7 @@ func Handle(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.Method == "GET" {
-		entry.userID = r.URL.Query().Get("uid")
+		entry.UserID = r.URL.Query().Get("uid")
 	}
 	if r.Method == "POST" {
 		if err := r.ParseForm(); err != nil {
@@ -47,8 +47,8 @@ func Handle(w http.ResponseWriter, r *http.Request) {
 		}
 
 		entry = &PlusOne{
-			userID: r.FormValue("userid"),
-			topic:  r.FormValue("topic"),
+			UserID: r.FormValue("userid"),
+			Topic:  r.FormValue("topic"),
 		}
 
 		err = increaseTopic(entry)
@@ -57,7 +57,7 @@ func Handle(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	}
-	keys, err := getKeys(entry.userID+"*", client)
+	keys, err := getKeys(entry.UserID+"*", client)
 	if err != nil {
 		fmt.Fprintf(w, "redis.getKeys error: %v\n", err)
 		return

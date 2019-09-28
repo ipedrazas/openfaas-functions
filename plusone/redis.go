@@ -32,11 +32,11 @@ func initialize(addr string, pwd string) *redisClient {
 }
 
 func increaseTopic(entry *PlusOne) error {
-	result, err := client.c.Incr(entry.userID + separator + entry.topic).Result()
+	result, err := client.c.Incr(entry.UserID + separator + entry.Topic).Result()
 	if err != nil {
 		return err
 	}
-	entry.counter = result
+	entry.Counter = result
 	return nil
 }
 
@@ -72,9 +72,9 @@ func getEntries(keys []string, client *redisClient) ([]PlusOne, error) {
 		count, _ := strconv.Atoi(value.Val())
 
 		p := PlusOne{
-			userID:  res[0],
-			topic:   res[1],
-			counter: int64(count),
+			UserID:  res[0],
+			Topic:   res[1],
+			Counter: int64(count),
 		}
 		entries = append(entries, p)
 	}
