@@ -39,7 +39,7 @@ func Handle(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method == "GET" {
 		entry.userID = r.URL.Query().Get("uid")
-
+		fmt.Fprintf(w, "r.URL.Query().Get(\"uid\"): %s", r.URL.Query().Get("uid"))
 	}
 	if r.Method == "POST" {
 		if err := r.ParseForm(); err != nil {
@@ -47,7 +47,7 @@ func Handle(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		entry := &PlusOne{
+		entry = &PlusOne{
 			userID: r.FormValue("userid"),
 			topic:  r.FormValue("topic"),
 		}
@@ -69,7 +69,7 @@ func Handle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	for _, k := range keys {
-		w.Write([]byte(k))
+		fmt.Fprintf(w, "keys: %s", k)
 	}
 
 	entries, err := getEntries(keys, client)
