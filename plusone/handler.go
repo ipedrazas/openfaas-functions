@@ -39,7 +39,6 @@ func Handle(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method == "GET" {
 		entry.userID = r.URL.Query().Get("uid")
-		fmt.Fprintf(w, "r.URL.Query().Get(\"uid\"): %s \n", r.URL.Query().Get("uid"))
 	}
 	if r.Method == "POST" {
 		if err := r.ParseForm(); err != nil {
@@ -57,30 +56,17 @@ func Handle(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprintf(w, "redis.incr error: %v\n", err)
 			return
 		}
-		fmt.Fprintf(w, "topic: %s, %d\n", entry.userID, entry.counter)
-
 	}
-
-	fmt.Fprintf(w, "userid: %s\n", entry.userID)
-
-	keys, err := getKeys(entry.userID+"*", client, w)
+	keys, err := getKeys(entry.userID+"*", client)
 	if err != nil {
-		fmt.Fprintf(w, "redis.incr error: %v\n", err)
+		fmt.Fprintf(w, "redis.getKeys error: %v\n", err)
 		return
 	}
-	for _, k := range keys {
-		fmt.Fprintf(w, "keys: %s\n", k)
-	}
 
-	entries, err := getEntries(keys, client, w)
+	entries, err := getEntries(keys, client)
 	if err != nil {
 		fmt.Fprintf(w, "redis.getEntries: %v\n", err)
 		return
-	}
-	for _, e := range entries {
-		fmt.Fprintf(w, "entry uid: %s\n", e.userID)
-		fmt.Fprintf(w, "entry topic: %s\n", e.topic)
-		fmt.Fprintf(w, "entry counter: %d\n", e.counter)
 	}
 
 	byteSlice, err := json.Marshal(entries)
@@ -88,7 +74,6 @@ func Handle(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	fmt.Fprintf(w, "entries: %s\n", string(byteSlice))
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(200)
 	w.Write(byteSlice)
