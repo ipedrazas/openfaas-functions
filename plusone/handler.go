@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"strconv"
 )
 
 // PlusOne contains 3 attributes: userid (hash), the topic and the counter
@@ -30,8 +29,8 @@ func setup() error {
 
 // Handle the requests
 func Handle(w http.ResponseWriter, r *http.Request) {
+	entry := &PlusOne{}
 
-	var userid string
 	err := setup()
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -39,32 +38,32 @@ func Handle(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.Method == "GET" {
-		userid = r.URL.Query().Get("uid")
+		entry.userID = r.URL.Query().Get("uid")
+
 	}
 	if r.Method == "POST" {
 		if err := r.ParseForm(); err != nil {
 			fmt.Fprintf(w, "ParseForm() err: %v", err)
 			return
 		}
-		userid = r.FormValue("userid")
-		topic := r.FormValue("topic")
+
 		entry := &PlusOne{
-			userID: userid,
-			topic:  topic,
+			userID: r.FormValue("userid"),
+			topic:  r.FormValue("topic"),
 		}
-		entry.counter, err = increaseTopic(userid, topic)
+
+		err = increaseTopic(entry)
 		if err != nil {
 			fmt.Fprintf(w, "redis.incr error: %v", err)
 			return
 		}
-		m := []byte("topic: " + userid + ", " + strconv.Itoa(int(entry.counter)))
-		w.Write(m)
+		fmt.Fprintf(w, "topic: %s, %d", entry.userID, entry.counter)
 
 	}
-	msg := []byte("userid: " + userid)
-	w.Write(msg)
 
-	keys, err := getKeys(userid+"*", client)
+	fmt.Fprintf(w, "userid: %v", entry.userID)
+
+	keys, err := getKeys(entry.userID+"*", client)
 	if err != nil {
 		fmt.Fprintf(w, "redis.incr error: %v", err)
 		return
