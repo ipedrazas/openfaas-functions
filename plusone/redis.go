@@ -1,6 +1,8 @@
 package function
 
 import (
+	"fmt"
+	"net/http"
 	"strconv"
 	"strings"
 
@@ -40,7 +42,7 @@ func increaseTopic(entry *PlusOne) error {
 	return nil
 }
 
-func getKeys(pattern string, client *redisClient) ([]string, error) {
+func getKeys(pattern string, client *redisClient, w http.ResponseWriter) ([]string, error) {
 
 	var cursor uint64
 	var keys []string
@@ -54,12 +56,13 @@ func getKeys(pattern string, client *redisClient) ([]string, error) {
 		if cursor == 0 {
 			break
 		}
+		fmt.Fprintf(w, "redis.getKeys: %v\n", ks)
 		keys = append(keys, ks...)
 	}
 	return keys, nil
 }
 
-func getEntries(keys []string, client *redisClient) ([]PlusOne, error) {
+func getEntries(keys []string, client *redisClient, w http.ResponseWriter) ([]PlusOne, error) {
 	var entries []PlusOne
 
 	for _, key := range keys {
@@ -77,6 +80,9 @@ func getEntries(keys []string, client *redisClient) ([]PlusOne, error) {
 			counter: int64(count),
 		}
 		entries = append(entries, p)
+		fmt.Fprintf(w, "redis.getEntries.uid: %s\n", p.userID)
+		fmt.Fprintf(w, "redis.getEntries.topic: %s\n", p.topic)
+		fmt.Fprintf(w, "redis.getEntries.counter: %d\n", p.counter)
 
 	}
 	return entries, nil

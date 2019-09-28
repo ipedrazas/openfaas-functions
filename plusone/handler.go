@@ -63,7 +63,7 @@ func Handle(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Fprintf(w, "userid: %s\n", entry.userID)
 
-	keys, err := getKeys(entry.userID+"*", client)
+	keys, err := getKeys(entry.userID+"*", client, w)
 	if err != nil {
 		fmt.Fprintf(w, "redis.incr error: %v\n", err)
 		return
@@ -72,7 +72,7 @@ func Handle(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "keys: %s\n", k)
 	}
 
-	entries, err := getEntries(keys, client)
+	entries, err := getEntries(keys, client, w)
 	if err != nil {
 		fmt.Fprintf(w, "redis.getEntries: %v\n", err)
 		return
